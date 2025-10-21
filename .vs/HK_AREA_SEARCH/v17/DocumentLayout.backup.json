@@ -1,0 +1,125 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\C_project\\HK_AREA_SEARCH\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{4D0A2F1C-C408-4BED-8DF7-503DE1A53D43}|HK_AREA_SEARCH.csproj|d:\\c_project\\hk_area_search\\viewmodels\\customintervaldialogviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4D0A2F1C-C408-4BED-8DF7-503DE1A53D43}|HK_AREA_SEARCH.csproj|solutionrelative:viewmodels\\customintervaldialogviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4D0A2F1C-C408-4BED-8DF7-503DE1A53D43}|HK_AREA_SEARCH.csproj|d:\\c_project\\hk_area_search\\business\\distance\\distanceservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4D0A2F1C-C408-4BED-8DF7-503DE1A53D43}|HK_AREA_SEARCH.csproj|solutionrelative:business\\distance\\distanceservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4D0A2F1C-C408-4BED-8DF7-503DE1A53D43}|HK_AREA_SEARCH.csproj|d:\\c_project\\hk_area_search\\business\\distance\\rasterreclassifier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4D0A2F1C-C408-4BED-8DF7-503DE1A53D43}|HK_AREA_SEARCH.csproj|solutionrelative:business\\distance\\rasterreclassifier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4D0A2F1C-C408-4BED-8DF7-503DE1A53D43}|HK_AREA_SEARCH.csproj|d:\\c_project\\hk_area_search\\models\\poidataitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4D0A2F1C-C408-4BED-8DF7-503DE1A53D43}|HK_AREA_SEARCH.csproj|solutionrelative:models\\poidataitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4D0A2F1C-C408-4BED-8DF7-503DE1A53D43}|HK_AREA_SEARCH.csproj|d:\\c_project\\hk_area_search\\main_dockpaneviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4D0A2F1C-C408-4BED-8DF7-503DE1A53D43}|HK_AREA_SEARCH.csproj|solutionrelative:main_dockpaneviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4D0A2F1C-C408-4BED-8DF7-503DE1A53D43}|HK_AREA_SEARCH.csproj|d:\\c_project\\hk_area_search\\\u9879\u76EE\u6574\u4F53\u67B6\u6784\u8BBE\u8BA1\u65B9\u6848_v2.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{4D0A2F1C-C408-4BED-8DF7-503DE1A53D43}|HK_AREA_SEARCH.csproj|solutionrelative:\u9879\u76EE\u6574\u4F53\u67B6\u6784\u8BBE\u8BA1\u65B9\u6848_v2.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 1,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedHeight": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CustomIntervalDialogViewModel.cs",
+              "DocumentMoniker": "D:\\C_project\\HK_AREA_SEARCH\\ViewModels\\CustomIntervalDialogViewModel.cs",
+              "RelativeDocumentMoniker": "ViewModels\\CustomIntervalDialogViewModel.cs",
+              "ToolTip": "D:\\C_project\\HK_AREA_SEARCH\\ViewModels\\CustomIntervalDialogViewModel.cs",
+              "RelativeToolTip": "ViewModels\\CustomIntervalDialogViewModel.cs",
+              "ViewState": "AgIAACMAAAAAODMzMzMDwDQAAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-21T00:53:26.773Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "RasterReclassifier.cs",
+              "DocumentMoniker": "D:\\C_project\\HK_AREA_SEARCH\\Business\\Distance\\RasterReclassifier.cs",
+              "RelativeDocumentMoniker": "Business\\Distance\\RasterReclassifier.cs",
+              "ToolTip": "D:\\C_project\\HK_AREA_SEARCH\\Business\\Distance\\RasterReclassifier.cs",
+              "RelativeToolTip": "Business\\Distance\\RasterReclassifier.cs",
+              "ViewState": "AgIAAGgAAAAAljMzMzPjv2EAAABcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-10T10:03:37.872Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "DistanceService.cs",
+              "DocumentMoniker": "D:\\C_project\\HK_AREA_SEARCH\\Business\\Distance\\DistanceService.cs",
+              "RelativeDocumentMoniker": "Business\\Distance\\DistanceService.cs",
+              "ToolTip": "D:\\C_project\\HK_AREA_SEARCH\\Business\\Distance\\DistanceService.cs",
+              "RelativeToolTip": "Business\\Distance\\DistanceService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-10T05:33:49.696Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "main_dockpaneViewModel.cs",
+              "DocumentMoniker": "D:\\C_project\\HK_AREA_SEARCH\\main_dockpaneViewModel.cs",
+              "RelativeDocumentMoniker": "main_dockpaneViewModel.cs",
+              "ToolTip": "D:\\C_project\\HK_AREA_SEARCH\\main_dockpaneViewModel.cs",
+              "RelativeToolTip": "main_dockpaneViewModel.cs",
+              "ViewState": "AgIAAGIBAAAAAAAAAAA6wAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-05T06:13:40.903Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "\u9879\u76EE\u6574\u4F53\u67B6\u6784\u8BBE\u8BA1\u65B9\u6848_v2.md",
+              "DocumentMoniker": "D:\\C_project\\HK_AREA_SEARCH\\\u9879\u76EE\u6574\u4F53\u67B6\u6784\u8BBE\u8BA1\u65B9\u6848_v2.md",
+              "RelativeDocumentMoniker": "\u9879\u76EE\u6574\u4F53\u67B6\u6784\u8BBE\u8BA1\u65B9\u6848_v2.md",
+              "ToolTip": "D:\\C_project\\HK_AREA_SEARCH\\\u9879\u76EE\u6574\u4F53\u67B6\u6784\u8BBE\u8BA1\u65B9\u6848_v2.md",
+              "RelativeToolTip": "\u9879\u76EE\u6574\u4F53\u67B6\u6784\u8BBE\u8BA1\u65B9\u6848_v2.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2025-10-07T12:48:00.578Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "POIDataItem.cs",
+              "DocumentMoniker": "D:\\C_project\\HK_AREA_SEARCH\\Models\\POIDataItem.cs",
+              "RelativeDocumentMoniker": "Models\\POIDataItem.cs",
+              "ToolTip": "D:\\C_project\\HK_AREA_SEARCH\\Models\\POIDataItem.cs",
+              "RelativeToolTip": "Models\\POIDataItem.cs",
+              "ViewState": "AgIAAAIAAACA//////8fwA4AAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-20T03:52:36.66Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

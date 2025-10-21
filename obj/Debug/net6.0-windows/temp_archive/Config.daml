@@ -1,0 +1,42 @@
+﻿<ArcGIS defaultAssembly="HK_AREA_SEARCH.dll" defaultNamespace="HK_AREA_SEARCH" xmlns="http://schemas.esri.com/DADF/Registry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.esri.com/DADF/Registry file:///D:/ArcGIS%20Pro/bin/ArcGIS.Desktop.Framework.xsd">
+  <AddInInfo id="{5d4182cc-7841-4855-b9a3-3df249e8d7d6}" version="1.0" desktopVersion="3.0.36056">
+    <Name>HK_AREA_SEARCH</Name>
+    <Description>HK_AREA_SEARCH description</Description>
+    <Image>Images\AddinDesktop32.png</Image>
+    <Author>Yuecheng Li Local</Author>
+    <Company>Acme</Company>
+    <Date>2025/10/4 14:42:25</Date>
+    <Subject>Framework</Subject>
+    <!-- Note subject can be one or more of these topics:
+                    Content, Framework, Editing, Geodatabase, Geometry, Geoprocessing, Layouts, Map Authoring, Map Exploration -->
+  </AddInInfo>
+  <modules>
+    <insertModule id="HK_AREA_SEARCH_Module" className="Module1" autoLoad="false" caption="Module1">
+      <!-- uncomment to have the control hosted on a separate tab-->
+      <tabs>
+        <!--<tab id="HK_AREA_SEARCH_Tab1" caption="New Tab">
+          <group refID="HK_AREA_SEARCH_Group1"/>
+        </tab>-->
+      </tabs>
+      <groups>
+        <!-- comment this out if you have no controls on the Addin tab to avoid
+              an empty group-->
+        <group id="HK_AREA_SEARCH_Group1" caption="Group 1" appearsOnAddInTab="true">
+          <!-- host controls within groups -->
+          <button refID="HK_AREA_SEARCH_main_dockpane_ShowButton" size="large" />
+        </group>
+      </groups>
+      <controls>
+        <!-- add your controls here -->
+        <button id="HK_AREA_SEARCH_main_dockpane_ShowButton" caption="Show main _dockpane" className="main_dockpane_ShowButton" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonPurple32.png">
+          <tooltip heading="Show Dockpane">Show Dockpane<disabledText /></tooltip>
+        </button>
+      </controls>
+      <dockPanes>
+        <dockPane id="HK_AREA_SEARCH_main_dockpane" caption="main _dockpane" className="main_dockpaneViewModel" dock="group" dockWith="esri_core_projectDockPane">
+          <content className="main_dockpaneView" />
+        </dockPane>
+      </dockPanes>
+    </insertModule>
+  </modules>
+</ArcGIS>

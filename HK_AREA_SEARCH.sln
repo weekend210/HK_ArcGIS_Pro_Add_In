@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35919.96 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HK_AREA_SEARCH", "HK_AREA_SEARCH.csproj", "{4D0A2F1C-C408-4BED-8DF7-503DE1A53D43}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4D0A2F1C-C408-4BED-8DF7-503DE1A53D43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D0A2F1C-C408-4BED-8DF7-503DE1A53D43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D0A2F1C-C408-4BED-8DF7-503DE1A53D43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D0A2F1C-C408-4BED-8DF7-503DE1A53D43}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {31E7CD81-FF12-4447-9BE2-C9D70F4822CF}
+	EndGlobalSection
+EndGlobal

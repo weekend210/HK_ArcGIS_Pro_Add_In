@@ -1,0 +1,6 @@
+D:\C_project\HK_AREA_SEARCH\obj\Any CPU\Debug\net6.0-windows\HK_AREA_SEARCH.csproj.AssemblyReference.cache
+D:\C_project\HK_AREA_SEARCH\obj\Any CPU\Debug\net6.0-windows\main_dockpane.g.cs
+D:\C_project\HK_AREA_SEARCH\obj\Any CPU\Debug\net6.0-windows\Views\CustomIntervalDialog.g.cs
+D:\C_project\HK_AREA_SEARCH\obj\Any CPU\Debug\net6.0-windows\GeneratedInternalTypeHelper.g.cs
+D:\C_project\HK_AREA_SEARCH\obj\Any CPU\Debug\net6.0-windows\HK_AREA_SEARCH_MarkupCompile.cache
+D:\C_project\HK_AREA_SEARCH\obj\Any CPU\Debug\net6.0-windows\HK_AREA_SEARCH_MarkupCompile.lref
