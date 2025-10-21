@@ -66,5 +66,15 @@ namespace HK_AREA_SEARCH.Models
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        /// <summary>
+        /// 检查_startValue、_endValue、_classValue三值是否为空或默认值
+        /// </summary>
+        /// <returns>如果三个值都为默认值（0）则返回true，否则返回false</returns>
+        public bool IsEmpty()
+        {
+            // 检查_startValue、_endValue、_classValue是否都为默认值
+            return _startValue == 0.0 && _endValue == 0.0 && _classValue == 0;
+        }
     }
 }

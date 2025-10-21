@@ -163,10 +163,12 @@ namespace HK_AREA_SEARCH.Distance
             {
                 if (poiItem.CustomInterval)
                 {
+                    // 获取自定义分类
+                    var CustomIntervalClass = new List<IntervalClassItem>();
+
                     return await reclassifier.CreateCustomClasses(
-                        inputRasterPath, 
-                        new List<IntervalClassItem>(), // 实际实现中需要传入用户定义的间隔
-                        poiItem
+                        inputRasterPath,
+                        CustomIntervalClass
                     );
                 }
                 else

@@ -143,20 +143,10 @@ namespace HK_AREA_SEARCH.Distance
         /// <param name="classItems">分类项列表</param>
         /// <param name="invertValues">是否反转分类值</param>
         /// <returns>重分类后的栅格路径</returns>
-        public async Task<string> CreateCustomClasses(string inputRasterPath, List<IntervalClassItem> classItems, POIDataItem poiItem)
+        public async Task<string> CreateCustomClasses(string inputRasterPath, List<IntervalClassItem> classItems)
         {
-            var reclassRules = new Dictionary<double, double>();
-
-            // 将IntervalClassItem转换为重分类规则
-            foreach (var item in classItems)
-            {
-                // 构建正确的重分类规则
-                // 每个规则格式: 起始值 结束值 新值
-                reclassRules[item.StartValue] = item.ClassValue;
-            }
-
             // 构建重分类表达式
-            string remapExpression = BuildRemapExpression(reclassRules);
+            string remapExpression = BuildRemapExpression(classItems);
 
             return await QueuedTask.Run(async () =>
             {
@@ -206,19 +196,20 @@ namespace HK_AREA_SEARCH.Distance
         /// <summary>
         /// 构建重分类表达式
         /// </summary>
-        private string BuildRemapExpression(Dictionary<double, double> reclassRules)
+        private string BuildRemapExpression(List<IntervalClassItem> classItems)
         {
-            if (reclassRules == null || reclassRules.Count == 0)
-                return "";
-
             // 为ArcGIS重分类工具构建正确的重映射字符串
-            // 格式: "from1 to1;from2 to2;..." 注意使用分号分隔
+            // 格式: "from1 to1 value1;from2 to2 value2;..." 注意使用分号分隔
             var remapPairs = new List<string>();
 
-            foreach (var rule in reclassRules)
+            foreach (var item in classItems)
             {
-                // 对于单个值的映射，需要指定相同的起始和结束值
-                remapPairs.Add($"{rule.Key} {rule.Key} {rule.Value}");
+                // 检查是否为空项
+                if (item.IsEmpty()) return "";
+
+                // 构建正确的重分类规则
+                // 每个规则格式: 起始值 结束值 新值
+                remapPairs.Add($"{item.StartValue} {item.EndValue} {item.ClassValue}");
             }
 
             // 用分号连接所有重映射对
