@@ -15,6 +15,15 @@ namespace HK_AREA_SEARCH.ViewModels
     public class CustomIntervalDialogViewModel : PropertyChangedBase
     {
         public ObservableCollection<IntervalClassItem> ClassItems { get; set; }
+        
+        private string _title;
+        public string Title
+        {
+            get { return _title; }
+            set { SetProperty(ref _title, value, () => Title); }
+        }
+        
+        private POIDataItem _poiItem;
 
         public ICommand AddClassCommand { get; private set; }
         public ICommand RemoveClassCommand { get; private set; }
@@ -28,12 +37,14 @@ namespace HK_AREA_SEARCH.ViewModels
             set { SetProperty(ref _dialogResult, value, () => DialogResult); }
         }
 
-        public CustomIntervalDialogViewModel()
+        public CustomIntervalDialogViewModel(POIDataItem poiItem)
         {
+            _poiItem = poiItem;
+            _title = $"自定义距离间隔 - {poiItem?.DataName ?? "未知数据"}";
             ClassItems = new ObservableCollection<IntervalClassItem>();
-            InitializeCommands();
             // 初始化默认分类
             InitializeDefaultClasses();
+            InitializeCommands();
         }
 
         private void InitializeCommands()
@@ -47,15 +58,45 @@ namespace HK_AREA_SEARCH.ViewModels
         private void InitializeDefaultClasses()
         {
             int ClassNumber = Constants.NUM_CLASSES;
-            // 添加默认分类
-            for (int i = 0; i < ClassNumber; i++)
+            int distance = _poiItem?.Distance != null ? Math.Abs(_poiItem.Distance.Value) : 1000;   // 使用绝对值
+            
+            double minValue = 0;
+            double maxValue = distance;
+            double interval = (maxValue - minValue) / ClassNumber;
+
+            if (_poiItem?.Distance > 0)
             {
-                ClassItems.Add(new IntervalClassItem
+                // 如果距离为正，分类值从10到1（反向评分，距离越近分越高）
+                for (int i = 0; i < ClassNumber; i++)
                 {
-                    StartValue = i * 100,  // 示例：距离间隔100米
-                    EndValue = (i + 1) * 100,
-                    ClassValue = 10 - i     // 反向评分，距离越近分越高
-                });
+                    double fromValue = minValue + (i * interval);
+                    double toValue = (i == ClassNumber - 1) ? maxValue : minValue + ((i + 1) * interval); // 确保最后一个区间包含最大值
+                    int classValue = ClassNumber - i; // 反转分类值
+
+                    ClassItems.Add(new IntervalClassItem
+                    {
+                        StartValue = fromValue,
+                        EndValue = toValue,
+                        ClassValue = classValue
+                    });
+                }
+            }
+            else
+            {
+                // 如果距离为负，分类值从1到10（距离越近分越低）
+                for (int i = 0; i < ClassNumber; i++)
+                {
+                    double fromValue = minValue + (i * interval);
+                    double toValue = (i == ClassNumber - 1) ? maxValue : minValue + ((i + 1) * interval); // 确保最后一个区间包含最大值
+                    int classValue = i + 1;
+
+                    ClassItems.Add(new IntervalClassItem
+                    {
+                        StartValue = fromValue,
+                        EndValue = toValue,
+                        ClassValue = classValue
+                    });
+                }
             }
         }
 
@@ -105,7 +146,7 @@ namespace HK_AREA_SEARCH.ViewModels
             var window = Application.Current.Windows.OfType<Window>().FirstOrDefault(w => w.DataContext == this);
             if (window != null)
             {
-                window.DialogResult = DialogResult;
+                window.DialogResult = _dialogResult;
                 window.Close();
             }
         }

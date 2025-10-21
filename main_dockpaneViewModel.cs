@@ -132,7 +132,7 @@ namespace HK_AREA_SEARCH
         }
 
         /// <summary>
-        /// 初始化集合（关键改进：只添加1个空白行）
+        /// 初始化集合
         /// </summary>
         private void InitializeCollections()
         {
@@ -140,7 +140,7 @@ namespace HK_AREA_SEARCH
             ConstraintItems = new ObservableCollection<ConstraintDataItem>();
             AddEmptyConstraintRow();
 
-            // 初始化POI集合（只添加1个空白行）
+            // 初始化POI集合
             POIItems = new ObservableCollection<POIDataItem>();
             AddEmptyPOIRow();
         }

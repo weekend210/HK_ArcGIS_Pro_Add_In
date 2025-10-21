@@ -1,35 +1,25 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using HK_AREA_SEARCH.ViewModels;
+using HK_AREA_SEARCH.Models;
 
 namespace HK_AREA_SEARCH.Views
 {
     /// <summary>
-    /// CustomIntervalDialog.xaml 的交互逻辑
+    /// 自定义间隔对话框
     /// </summary>
     public partial class CustomIntervalDialog : Window
     {
-        public CustomIntervalDialog()
+        public CustomIntervalDialog(POIDataItem poiItem)
         {
             InitializeComponent();
-            this.DataContext = new CustomIntervalDialogViewModel();
-        }
-
-        public CustomIntervalDialog(CustomIntervalDialogViewModel viewModel)
-        {
-            InitializeComponent();
+            
+            // 创建 ViewModel 并传递 POI 项信息
+            var viewModel = new CustomIntervalDialogViewModel(poiItem);
             this.DataContext = viewModel;
         }
+
+        // 获取对话框结果的属性
+        public bool? ShowDialogResult => this.DialogResult;
     }
 }

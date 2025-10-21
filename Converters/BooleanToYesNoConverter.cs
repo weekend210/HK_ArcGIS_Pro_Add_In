@@ -1,6 +1,8 @@
 using System;
 using System.Globalization;
+using System.Reflection;
 using System.Windows.Data;
+using ArcGIS.Desktop.Framework.Dialogs;
 
 namespace HK_AREA_SEARCH.Converters
 {

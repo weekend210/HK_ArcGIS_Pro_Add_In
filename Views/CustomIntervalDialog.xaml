@@ -5,7 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:local="clr-namespace:HK_AREA_SEARCH.Views"
         mc:Ignorable="d" 
-        Title="自定义距离间隔" Height="450" Width="600"
+        Title="{Binding Title}" Height="450" Width="600"
         WindowStartupLocation="CenterOwner">
     
     <Grid Margin="10">

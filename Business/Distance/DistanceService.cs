@@ -11,6 +11,9 @@ using HK_AREA_SEARCH.Common;
 using ArcGIS.Desktop.Mapping;
 using ArcGIS.Desktop.Catalog;
 using ArcGIS.Desktop.Core;
+using HK_AREA_SEARCH.Views;
+using HK_AREA_SEARCH.ViewModels;
+using ArcGIS.Desktop.Framework.Dialogs;
 
 
 namespace HK_AREA_SEARCH.Distance
@@ -39,7 +42,7 @@ namespace HK_AREA_SEARCH.Distance
 
             //获取分析区域的边界范围
             //描述：输入analysisAreaPath，输出边界Envelope类型
-            Envelope extentEnvelope = await GetFeatureExtent(analysisAreaPath);  
+            Envelope extentEnvelope = await GetFeatureExtent(analysisAreaPath);
 
             try
             {
@@ -71,7 +74,7 @@ namespace HK_AREA_SEARCH.Distance
 
                 // 判断数据类型并执行相应操作
                 DataType dataType = DetermineDataType(poiItem.DataPath);
-                
+
                 if (dataType == DataType.Vector)
                 {
                     // 如果是矢量数据，计算欧氏距离
@@ -87,7 +90,7 @@ namespace HK_AREA_SEARCH.Distance
                 {
                     throw new Exception($"无法识别数据类型: {poiItem.DataPath}");
                 }
-                
+
                 // 执行重分类
                 string reclassPath = await ReclassifyRaster(inputRasterPath, poiItem);
                 /*
@@ -115,15 +118,15 @@ namespace HK_AREA_SEARCH.Distance
             string extension = Path.GetExtension(dataPath)?.ToLower();
 
             // 常见的栅格文件扩展名
-            if (extension == ".tif" || extension == ".tiff" || extension == ".img" || 
-                extension == ".bil" || extension == ".jpg" || extension == ".jp2" || 
+            if (extension == ".tif" || extension == ".tiff" || extension == ".img" ||
+                extension == ".bil" || extension == ".jpg" || extension == ".jp2" ||
                 extension == ".png" || extension == ".gif")
             {
                 return DataType.Raster;
             }
 
             // 常见的矢量文件扩展名
-            if (extension == ".shp" || extension == ".gdb" || extension == ".dbf" || 
+            if (extension == ".shp" || extension == ".gdb" || extension == ".dbf" ||
                 extension == ".lyr" || extension == ".kml" || extension == ".geojson")
             {
                 return DataType.Vector;
@@ -142,8 +145,8 @@ namespace HK_AREA_SEARCH.Distance
                 var calculator = new EuclideanDistanceCalculator(_tempFileManager);
                 // 设置合适的最大距离值（米），取POI项中的距离绝对值，如果未指定则使用默认值
                 double maxDistance = poiItem?.Distance != null ? Math.Abs(poiItem.Distance.Value) : 1000;
-                calculator.SetMaxDistance(maxDistance); 
-                
+                calculator.SetMaxDistance(maxDistance);
+
                 return await calculator.CalculateAsync(vectorPath, extentEnvelope);
             }
             catch (Exception ex)
@@ -158,25 +161,39 @@ namespace HK_AREA_SEARCH.Distance
         private async Task<string> ReclassifyRaster(string inputRasterPath, POIDataItem poiItem = null)
         {
             var reclassifier = new RasterReclassifier(_tempFileManager);
-            
+
             try
             {
-                if (poiItem.CustomInterval)
+                // 使用自定义间隔
+                if (poiItem?.CustomInterval == true)
                 {
-                    // 获取自定义分类
-                    var CustomIntervalClass = new List<IntervalClassItem>();
+                    // 弹出新窗口要求输入自定义分类间隔，需要在UI线程中执行
+                    var customIntervalClass = await ShowCustomIntervalDialogAsync(poiItem);
 
-                    return await reclassifier.CreateCustomClasses(
-                        inputRasterPath,
-                        CustomIntervalClass
-                    );
+                    // 如果用户没有取消对话框，并且有有效的分类设置
+                    if (customIntervalClass != null && customIntervalClass.Count > 0)
+                    {
+                        return await reclassifier.CreateCustomClasses(
+                            inputRasterPath,
+                            customIntervalClass
+                        );
+                    }
+                    else
+                    {
+                        // 用户取消对话框，使用默认等间隔分类
+                        return await reclassifier.CreateEqualIntervalClasses(
+                            inputRasterPath,
+                            Constants.NUM_CLASSES,
+                            poiItem
+                        );
+                    }
                 }
                 else
                 {
                     // 使用等间隔分类
                     return await reclassifier.CreateEqualIntervalClasses(
-                        inputRasterPath, 
-                        Constants.NUM_CLASSES, 
+                        inputRasterPath,
+                        Constants.NUM_CLASSES,
                         poiItem
                     );
                 }
@@ -189,15 +206,38 @@ namespace HK_AREA_SEARCH.Distance
         }
 
         /// <summary>
+        /// 显示自定义间隔对话框（在UI线程中）
+        /// </summary>
+        private async Task<List<IntervalClassItem>> ShowCustomIntervalDialogAsync(POIDataItem poiItem)
+        {
+            return await ArcGIS.Desktop.Framework.FrameworkApplication.Current.Dispatcher.InvokeAsync(() =>
+            {
+                var customIntervalDialog = new Views.CustomIntervalDialog(poiItem);
+                bool? result = customIntervalDialog.ShowDialog();
+
+                if (result == true)
+                {
+                    var customIntervalViewModel = (ViewModels.CustomIntervalDialogViewModel)customIntervalDialog.DataContext;
+                    return new List<IntervalClassItem>(customIntervalViewModel.ClassItems);
+                }
+                else
+                {
+                    // 用户取消对话框
+                    return null;
+                }
+            }).Task;
+        }
+
+        /// <summary>
         /// 处理NoData值
         /// </summary>
         private async Task<string> ProcessNoDataValues(string inputRasterPath, int distance)
         {
             var noDataHandler = new NoDataHandler(_tempFileManager);
-            
+
             // 如果距离为正，NoData值替换为0；如果距离为负，NoData值替换为10
             double noDataValue = distance >= 0 ? 0.0 : Constants.NUM_CLASSES;
-            
+
             return await noDataHandler.ReplaceNoDataAsync(inputRasterPath, noDataValue);
         }
 
@@ -209,10 +249,10 @@ namespace HK_AREA_SEARCH.Distance
         public async Task<Envelope> GetFeatureExtent(string analysisAreaPath)
         {
             if (string.IsNullOrWhiteSpace(analysisAreaPath))
-                {
-                    return null;
-                }
-            
+            {
+                return null;
+            }
+
             // 验证文件路径是否存在
             if (!File.Exists(analysisAreaPath))
             {
@@ -235,7 +275,7 @@ namespace HK_AREA_SEARCH.Distance
 
                     //获取边界
                     Envelope envelope = featureclass.GetExtent();
-                
+
                     return envelope;
                 }
                 catch (Exception ex)

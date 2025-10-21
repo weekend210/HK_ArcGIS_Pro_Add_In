@@ -6,6 +6,7 @@
              xmlns:ui="clr-namespace:HK_AREA_SEARCH"
              xmlns:extensions="clr-namespace:ArcGIS.Desktop.Extensions;assembly=ArcGIS.Desktop.Extensions"
              xmlns:converters="clr-namespace:HK_AREA_SEARCH.Converters"
+             xmlns:System="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
              d:DesignHeight="700" d:DesignWidth="850"
              d:DataContext="{Binding Path=ui.main_dockpaneViewModel}"
@@ -208,10 +209,11 @@
                             <DataGridTemplateColumn Header="自定义距离间隔" Width="1.5*">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <ComboBox SelectedValue="{Binding CustomInterval, Mode=TwoWay}"
+                                        <ComboBox SelectedValue="{Binding Path=CustomInterval, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                  SelectedValuePath="Tag"
                                                   VerticalContentAlignment="Center">
+                                            <ComboBoxItem Content="否" Tag="False"/>
                                             <ComboBoxItem Content="是" Tag="True"/>
-                                            <ComboBoxItem Content="否" Tag="False" IsSelected="True"/>
                                         </ComboBox>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
