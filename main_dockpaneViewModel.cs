@@ -344,9 +344,31 @@ namespace HK_AREA_SEARCH
         /// </summary>
         private bool CanRunAnalysis(object parameter)
         {
-            return !string.IsNullOrWhiteSpace(AnalysisAreaPath) &&
-                   POIItems.Any(p => !p.IsEmpty) &&
-                   !string.IsNullOrWhiteSpace(OutputPath);
+            // Basic validation first
+            if (string.IsNullOrWhiteSpace(AnalysisAreaPath) ||
+                !POIItems.Any(p => !p.IsEmpty) ||
+                string.IsNullOrWhiteSpace(OutputPath))
+            {
+                return false;
+            }
+
+            // Validate detailed requirements for each POI item
+            foreach (var item in POIItems.Where(p => !p.IsEmpty))
+            {
+                // For vector data (non-raster), distance is required
+                if (!item.IsRasterData && !item.Distance.HasValue)
+                {
+                    return false;
+                }
+
+                // Weight is always required and must be set by user
+                if (!item.Weight.HasValue || !item.WeightHasBeenSetByUser)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>

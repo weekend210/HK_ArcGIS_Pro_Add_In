@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -25,8 +26,6 @@ namespace HK_AREA_SEARCH.ViewModels
         
         private POIDataItem _poiItem;
 
-        public ICommand AddClassCommand { get; private set; }
-        public ICommand RemoveClassCommand { get; private set; }
         public ICommand OKCommand { get; private set; }
         public ICommand CancelCommand { get; private set; }
 
@@ -45,13 +44,36 @@ namespace HK_AREA_SEARCH.ViewModels
             // 初始化默认分类
             InitializeDefaultClasses();
             InitializeCommands();
+            
+            // 订阅ClassItems集合中每个项目的属性变化事件
+            foreach (var item in ClassItems)
+            {
+                ((INotifyPropertyChanged)item).PropertyChanged += OnIntervalItemPropertyChanged;
+            }
+            
+            // 订阅集合变化事件 if the collection could be modified in the future
+            ClassItems.CollectionChanged += (sender, e) =>
+            {
+                if (e.NewItems != null)
+                {
+                    foreach (IntervalClassItem item in e.NewItems)
+                    {
+                        ((INotifyPropertyChanged)item).PropertyChanged += OnIntervalItemPropertyChanged;
+                    }
+                }
+                if (e.OldItems != null)
+                {
+                    foreach (IntervalClassItem item in e.OldItems)
+                    {
+                        ((INotifyPropertyChanged)item).PropertyChanged -= OnIntervalItemPropertyChanged;
+                    }
+                }
+            };
         }
 
         private void InitializeCommands()
         {
-            AddClassCommand = new RelayCommand(AddClass, (object parameter) => true);
-            RemoveClassCommand = new RelayCommand(RemoveClass, (object parameter) => ClassItems.Count > 1);
-            OKCommand = new RelayCommand(OK, (object parameter) => ValidateClassItems());
+            OKCommand = new RelayCommandWithCanExecute(OK, (object parameter) => ValidateClassItems());
             CancelCommand = new RelayCommand(Cancel, (object parameter) => true);
         }
 
@@ -100,33 +122,46 @@ namespace HK_AREA_SEARCH.ViewModels
             }
         }
 
-        private void AddClass(object parameter)
-        {
-            ClassItems.Add(new IntervalClassItem
-            {
-                StartValue = 0,
-                EndValue = 1000,
-                ClassValue = 0
-            });
-        }
 
-        private void RemoveClass(object parameter)
-        {
-            if (parameter is IntervalClassItem item && ClassItems.Contains(item))
-            {
-                ClassItems.Remove(item);
-            }
-        }
 
         private bool ValidateClassItems()
         {
-            // 验证分类项的有效性
+            // 首先重置所有错误标志
             foreach (var item in ClassItems)
             {
-                if (item.StartValue >= item.EndValue)
-                    return false;
+                item.HasStartValueError = false;
+                item.HasEndValueError = false;
             }
-            return ClassItems.Count > 0;
+
+            // 验证区间连续性和有效性
+            for (int i = 0; i < ClassItems.Count; i++)
+            {
+                var currentItem = ClassItems[i];
+                
+                // 检查每个区间的开始值必须小于结束值
+                if (currentItem.StartValue >= currentItem.EndValue)
+                {
+                    currentItem.HasStartValueError = true;
+                    currentItem.HasEndValueError = true;
+                    continue; // 如果区间本身无效，无需检查连续性
+                }
+
+                // 从第二个区间开始，检查连续性：当前区间的开始值应该等于前一个区间的结束值
+                if (i > 0)
+                {
+                    var previousItem = ClassItems[i - 1];
+                    if (Math.Abs(currentItem.StartValue - previousItem.EndValue) > 0.0001) // 使用小的容差值
+                    {
+                        currentItem.HasStartValueError = true;
+                        previousItem.HasEndValueError = true;
+                    }
+                }
+            }
+
+            // 检查是否有任何错误
+            bool hasErrors = ClassItems.Any(item => item.HasStartValueError || item.HasEndValueError);
+            
+            return !hasErrors && ClassItems.Count > 0;
         }
 
         private void OK(object parameter)
@@ -139,6 +174,20 @@ namespace HK_AREA_SEARCH.ViewModels
         {
             DialogResult = false;
             CloseDialog();
+        }
+
+        private void OnIntervalItemPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            // 当区间值改变时，重新验证整个列表
+            if (e.PropertyName == nameof(IntervalClassItem.StartValue) || 
+                e.PropertyName == nameof(IntervalClassItem.EndValue))
+            {
+                // 更新命令的可执行状态
+                if (OKCommand is RelayCommandWithCanExecute okCommand)
+                {
+                    okCommand.RaiseCanExecuteChanged();
+                }
+            }
         }
 
         private void CloseDialog()

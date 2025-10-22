@@ -11,6 +11,8 @@ namespace HK_AREA_SEARCH.Models
         private double _startValue;
         private double _endValue;
         private int _classValue;
+        private bool _hasStartValueError;
+        private bool _hasEndValueError;
 
         /// <summary>
         /// 开始值
@@ -55,6 +57,38 @@ namespace HK_AREA_SEARCH.Models
                 if (_classValue != value)
                 {
                     _classValue = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 是否开始值有错误
+        /// </summary>
+        public bool HasStartValueError
+        {
+            get => _hasStartValueError;
+            set
+            {
+                if (_hasStartValueError != value)
+                {
+                    _hasStartValueError = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 是否结束值有错误
+        /// </summary>
+        public bool HasEndValueError
+        {
+            get => _hasEndValueError;
+            set
+            {
+                if (_hasEndValueError != value)
+                {
+                    _hasEndValueError = value;
                     OnPropertyChanged();
                 }
             }

@@ -5,8 +5,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:local="clr-namespace:HK_AREA_SEARCH.Views"
         mc:Ignorable="d" 
-        Title="{Binding Title}" Height="450" Width="600"
-        WindowStartupLocation="CenterOwner">
+        Title="{Binding Title}" Height="300" Width="450"
+        WindowStartupLocation="CenterOwner"
+        SizeToContent="Height"
+        MinHeight="250"
+        MinWidth="400">
     
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -18,36 +21,53 @@
                   ItemsSource="{Binding ClassItems}"
                   AutoGenerateColumns="False" 
                   CanUserAddRows="False"
-                  Margin="0,0,0,10">
+                  Margin="5,5,5,10"
+                  HeadersVisibility="Column"
+                  GridLinesVisibility="All"
+                  AlternatingRowBackground="LightGray"
+                  AlternationCount="2">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="开始值" 
-                                    Binding="{Binding StartValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                    Width="*"/>
+                                    Width="*">
+                    <DataGridTextColumn.Binding>
+                        <Binding Path="StartValue" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" />
+                    </DataGridTextColumn.Binding>
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="HorizontalAlignment" Value="Right"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HasStartValueError}" Value="True">
+                                    <Setter Property="Foreground" Value="Red"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
                 <DataGridTextColumn Header="结束值" 
-                                    Binding="{Binding EndValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                    Width="*"/>
+                                    Width="*">
+                    <DataGridTextColumn.Binding>
+                        <Binding Path="EndValue" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" />
+                    </DataGridTextColumn.Binding>
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="HorizontalAlignment" Value="Right"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HasEndValueError}" Value="True">
+                                    <Setter Property="Foreground" Value="Red"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
                 <DataGridTextColumn Header="类别值" 
                                     Binding="{Binding ClassValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                     Width="*"/>
-                <DataGridTemplateColumn Header="操作" Width="80">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="删除" 
-                                    Command="{Binding RelativeSource={RelativeSource AncestorType=DataGrid}, 
-                                            Path=DataContext.RemoveClassCommand}" 
-                                    CommandParameter="{Binding}" 
-                                    Width="60" Height="25"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
         
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="添加分类" 
-                    Command="{Binding AddClassCommand}" 
-                    Width="80" Height="25" 
-                    Margin="0,0,10,0"/>
             <Button Content="确定" 
                     Command="{Binding OKCommand}" 
                     Width="60" Height="25" 

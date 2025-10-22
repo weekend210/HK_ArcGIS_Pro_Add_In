@@ -13,6 +13,7 @@ namespace HK_AREA_SEARCH.Models
         private string _dataName;
         private int? _distance;
         private double? _weight;
+        private bool _weightHasBeenSetByUser = false; // Track if user has set the weight
         private bool _customInterval;
         private bool _isRasterData;
 
@@ -94,14 +95,21 @@ namespace HK_AREA_SEARCH.Models
                 if (value.HasValue)
                 {
                     _weight = Math.Round(value.Value, 2);
+                    _weightHasBeenSetByUser = true; // Mark that user has set the value
                 }
                 else
                 {
                     _weight = value;
+                    _weightHasBeenSetByUser = false; // If set to null, reset the flag
                 }
                 OnPropertyChanged();
             }
         }
+
+        /// <summary>
+        /// 权重是否已被用户设置（用于验证）
+        /// </summary>
+        public bool WeightHasBeenSetByUser => _weightHasBeenSetByUser;
 
         /// <summary>
         /// 是否自定义距离间隔

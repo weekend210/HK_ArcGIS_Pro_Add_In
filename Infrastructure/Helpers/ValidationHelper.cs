@@ -165,6 +165,22 @@ namespace HK_AREA_SEARCH.Infrastructure.Helpers
                     result.ErrorMessage = $"POI权重必须在0到1之间: {item.DataName}";
                     return result;
                 }
+
+                // 对于矢量数据（非栅格数据），必须提供距离
+                if (!item.IsRasterData && !item.Distance.HasValue)
+                {
+                    result.IsValid = false;
+                    result.ErrorMessage = $"POI {item.DataName} 需要设置距离参数";
+                    return result;
+                }
+
+                // 验证权重不能为空和必须由用户设置
+                if (!item.Weight.HasValue || !item.WeightHasBeenSetByUser)
+                {
+                    result.IsValid = false;
+                    result.ErrorMessage = $"POI {item.DataName} 需要设置权重参数";
+                    return result;
+                }
             }
 
             // 验证输出路径
