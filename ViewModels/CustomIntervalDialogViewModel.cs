@@ -76,12 +76,18 @@ namespace HK_AREA_SEARCH.ViewModels
             };
         }
 
+        /// <summary>
+        /// 按钮初始化
+        /// </summary>
         private void InitializeCommands()
         {
             OKCommand = new RelayCommandWithCanExecute(OK, (object parameter) => ValidateClassItems());
             CancelCommand = new RelayCommand(Cancel, (object parameter) => true);
         }
 
+        /// <summary>
+        /// 自定义分类值初始化
+        /// </summary>
         private void InitializeDefaultClasses()
         {
             int ClassNumber = Constants.NUM_CLASSES;
@@ -89,7 +95,7 @@ namespace HK_AREA_SEARCH.ViewModels
             double minValue, maxValue;
             
             // 如果有距离值（矢量数据），则使用距离
-            // 如果没有距离值（栅格数据），则使用默认值 initially
+            // 如果没有距离值（栅格数据），则暂时使用默认值,后面再处理
             if (_poiItem?.Distance.HasValue == true)
             {
                 int distance = Math.Abs(_poiItem.Distance.Value);   // 使用绝对值
@@ -152,16 +158,21 @@ namespace HK_AREA_SEARCH.ViewModels
                 _ = UpdateClassItemsWithRasterValues();  // Fire and forget
             }
         }
-        
+
+        /// <summary>
+        /// 获取栅格数据value的最小值和最大值，并更新分类项
+        /// </summary>
         private async Task UpdateClassItemsWithRasterValues()
         {
             try
             {
-                // Create a temporary TempFileManager for this operation
+                // 获取栅格最小值和最大值
                 var tempFileManager = new TempFileManager();
+                // 由栅格重分类器获取 min/max
                 var reclassifier = new RasterReclassifier(tempFileManager);
-                
                 var (rasterMin, rasterMax) = await reclassifier.GetRasterMinMaxAsync(_inputRasterPath);
+
+                // 在UI线程上更新ClassItems
                 await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                 {
                     UpdateClassItemsWithValues(rasterMin, rasterMax);
@@ -169,22 +180,24 @@ namespace HK_AREA_SEARCH.ViewModels
             }
             catch (Exception ex)
             {
-                // In case of error, keep the default values, but perhaps log the error
+                // 出错则使用默认值，并写入日志和弹窗提示
                 System.Diagnostics.Debug.WriteLine($"Error getting raster min/max: {ex.Message}");
+                MessageBox.Show($"获取栅格数据最小值和最大值时出错，使用默认分类值。\n错误信息: {ex.Message}", "错误");
             }
         }
-        
+
+        /// <summary>
+        /// 更新窗口分类项
+        /// </summary>
         private void UpdateClassItemsWithValues(double minValue, double maxValue)
         {
             int ClassNumber = Constants.NUM_CLASSES;
             double interval = (maxValue - minValue) / ClassNumber;
 
-            // For raster data without distance, we'll use the standard approach 
-            // (lower raster values get lower class values)
-            // Determine whether to invert values based on context - for now, defaulting to non-inverted for raster
-            bool invertValues = false; // default for raster data
+            // 是否反转分类值，这里默认栅格数据为正向评分（value越小，分值越高）
+            bool invertValues = true;
 
-            // Clear existing items
+            // 先清理重分类现有项
             ClassItems.Clear();
 
             if (invertValues)
