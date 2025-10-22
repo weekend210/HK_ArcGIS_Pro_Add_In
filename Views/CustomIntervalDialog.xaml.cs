@@ -10,12 +10,12 @@ namespace HK_AREA_SEARCH.Views
     /// </summary>
     public partial class CustomIntervalDialog : Window
     {
-        public CustomIntervalDialog(POIDataItem poiItem)
+        public CustomIntervalDialog(string inputRasterPath, POIDataItem poiItem)
         {
             InitializeComponent();
             
-            // 创建 ViewModel 并传递 POI 项信息
-            var viewModel = new CustomIntervalDialogViewModel(poiItem);
+            // 创建 ViewModel 并传递栅格路径和 POI 项信息
+            var viewModel = new CustomIntervalDialogViewModel(inputRasterPath, poiItem);
             this.DataContext = viewModel;
         }
 

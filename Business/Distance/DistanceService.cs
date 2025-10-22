@@ -46,11 +46,14 @@ namespace HK_AREA_SEARCH.Distance
 
             try
             {
+                // 处理每个POI数据项
                 foreach (var item in poiItems)
                 {
+                    // 跳过空路径
                     if (string.IsNullOrWhiteSpace(item.DataPath))
                         continue;
 
+                    // 依次处理每个POI项，返回处理后的栅格路径
                     string processedRasterPath = await ProcessPOIItem(item, extentEnvelope);
                     result[item.DataName] = processedRasterPath;
                 }
@@ -168,9 +171,9 @@ namespace HK_AREA_SEARCH.Distance
                 if (poiItem?.CustomInterval == true)
                 {
                     // 弹出新窗口要求输入自定义分类间隔，需要在UI线程中执行
-                    var customIntervalClass = await ShowCustomIntervalDialogAsync(poiItem);
+                    var customIntervalClass = await ShowCustomIntervalDialogAsync(inputRasterPath, poiItem);
 
-                    // 如果用户没有取消对话框，并且有有效的分类设置
+                    // 确定按钮（没有取消对话框），且有效的分类设置
                     if (customIntervalClass != null && customIntervalClass.Count > 0)
                     {
                         return await reclassifier.CreateCustomClasses(
@@ -208,11 +211,11 @@ namespace HK_AREA_SEARCH.Distance
         /// <summary>
         /// 显示自定义间隔对话框（在UI线程中）
         /// </summary>
-        private async Task<List<IntervalClassItem>> ShowCustomIntervalDialogAsync(POIDataItem poiItem)
+        private async Task<List<IntervalClassItem>> ShowCustomIntervalDialogAsync(string inputRasterPath, POIDataItem poiItem)
         {
             return await ArcGIS.Desktop.Framework.FrameworkApplication.Current.Dispatcher.InvokeAsync(() =>
             {
-                var customIntervalDialog = new Views.CustomIntervalDialog(poiItem);
+                var customIntervalDialog = new Views.CustomIntervalDialog(inputRasterPath, poiItem);
                 bool? result = customIntervalDialog.ShowDialog();
 
                 if (result == true)

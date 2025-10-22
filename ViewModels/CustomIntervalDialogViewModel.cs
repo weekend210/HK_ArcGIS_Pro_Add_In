@@ -2,11 +2,14 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using ArcGIS.Desktop.Framework.Contracts;
 using HK_AREA_SEARCH.Models;
 using HK_AREA_SEARCH.Common;
+using HK_AREA_SEARCH.Infrastructure.Services;
+using HK_AREA_SEARCH.Distance;
 
 namespace HK_AREA_SEARCH.ViewModels
 {
@@ -24,6 +27,7 @@ namespace HK_AREA_SEARCH.ViewModels
             set { SetProperty(ref _title, value, () => Title); }
         }
         
+        private string _inputRasterPath;
         private POIDataItem _poiItem;
 
         public ICommand OKCommand { get; private set; }
@@ -36,8 +40,9 @@ namespace HK_AREA_SEARCH.ViewModels
             set { SetProperty(ref _dialogResult, value, () => DialogResult); }
         }
 
-        public CustomIntervalDialogViewModel(POIDataItem poiItem)
+        public CustomIntervalDialogViewModel(string inputRasterPath, POIDataItem poiItem)
         {
+            _inputRasterPath = inputRasterPath;
             _poiItem = poiItem;
             _title = $"自定义距离间隔 - {poiItem?.DataName ?? "未知数据"}";
             ClassItems = new ObservableCollection<IntervalClassItem>();
@@ -80,15 +85,35 @@ namespace HK_AREA_SEARCH.ViewModels
         private void InitializeDefaultClasses()
         {
             int ClassNumber = Constants.NUM_CLASSES;
-            int distance = _poiItem?.Distance != null ? Math.Abs(_poiItem.Distance.Value) : 1000;   // 使用绝对值
             
-            double minValue = 0;
-            double maxValue = distance;
+            double minValue, maxValue;
+            
+            // 如果有距离值（矢量数据），则使用距离
+            // 如果没有距离值（栅格数据），则使用默认值 initially
+            if (_poiItem?.Distance.HasValue == true)
+            {
+                int distance = Math.Abs(_poiItem.Distance.Value);   // 使用绝对值
+                minValue = 0;
+                maxValue = distance;
+            }
+            else
+            {
+                // 对于栅格数据，暂时使用默认值
+                minValue = 0;
+                maxValue = 1000;
+            }
+            
             double interval = (maxValue - minValue) / ClassNumber;
 
-            if (_poiItem?.Distance > 0)
+            // 确定分类值的顺序：如果距离为正，则反向（高值对应低分类），否则正向
+            bool invertValues = _poiItem?.Distance.HasValue == true ? _poiItem.Distance > 0 : true;
+
+            // 清空现有项
+            ClassItems.Clear();
+
+            if (invertValues)
             {
-                // 如果距离为正，分类值从10到1（反向评分，距离越近分越高）
+                // 如果距离为正或未知（栅格数据），分类值从高到低（反向评分，值越小分越高）
                 for (int i = 0; i < ClassNumber; i++)
                 {
                     double fromValue = minValue + (i * interval);
@@ -105,11 +130,87 @@ namespace HK_AREA_SEARCH.ViewModels
             }
             else
             {
-                // 如果距离为负，分类值从1到10（距离越近分越低）
+                // 如果距离为负，分类值从低到高
                 for (int i = 0; i < ClassNumber; i++)
                 {
                     double fromValue = minValue + (i * interval);
                     double toValue = (i == ClassNumber - 1) ? maxValue : minValue + ((i + 1) * interval); // 确保最后一个区间包含最大值
+                    int classValue = i + 1;
+
+                    ClassItems.Add(new IntervalClassItem
+                    {
+                        StartValue = fromValue,
+                        EndValue = toValue,
+                        ClassValue = classValue
+                    });
+                }
+            }
+            
+            // 如果没有距离值（栅格数据），在后台获取实际的栅格 min/max 值并更新分类
+            if (!_poiItem?.Distance.HasValue == true && !string.IsNullOrEmpty(_inputRasterPath))
+            {
+                _ = UpdateClassItemsWithRasterValues();  // Fire and forget
+            }
+        }
+        
+        private async Task UpdateClassItemsWithRasterValues()
+        {
+            try
+            {
+                // Create a temporary TempFileManager for this operation
+                var tempFileManager = new TempFileManager();
+                var reclassifier = new RasterReclassifier(tempFileManager);
+                
+                var (rasterMin, rasterMax) = await reclassifier.GetRasterMinMaxAsync(_inputRasterPath);
+                await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    UpdateClassItemsWithValues(rasterMin, rasterMax);
+                }));
+            }
+            catch (Exception ex)
+            {
+                // In case of error, keep the default values, but perhaps log the error
+                System.Diagnostics.Debug.WriteLine($"Error getting raster min/max: {ex.Message}");
+            }
+        }
+        
+        private void UpdateClassItemsWithValues(double minValue, double maxValue)
+        {
+            int ClassNumber = Constants.NUM_CLASSES;
+            double interval = (maxValue - minValue) / ClassNumber;
+
+            // For raster data without distance, we'll use the standard approach 
+            // (lower raster values get lower class values)
+            // Determine whether to invert values based on context - for now, defaulting to non-inverted for raster
+            bool invertValues = false; // default for raster data
+
+            // Clear existing items
+            ClassItems.Clear();
+
+            if (invertValues)
+            {
+                // 反向：值越小，分类越高
+                for (int i = 0; i < ClassNumber; i++)
+                {
+                    double fromValue = minValue + (i * interval);
+                    double toValue = (i == ClassNumber - 1) ? maxValue : minValue + ((i + 1) * interval);
+                    int classValue = ClassNumber - i;
+
+                    ClassItems.Add(new IntervalClassItem
+                    {
+                        StartValue = fromValue,
+                        EndValue = toValue,
+                        ClassValue = classValue
+                    });
+                }
+            }
+            else
+            {
+                // 正向：值越小，分类越低
+                for (int i = 0; i < ClassNumber; i++)
+                {
+                    double fromValue = minValue + (i * interval);
+                    double toValue = (i == ClassNumber - 1) ? maxValue : minValue + ((i + 1) * interval);
                     int classValue = i + 1;
 
                     ClassItems.Add(new IntervalClassItem
