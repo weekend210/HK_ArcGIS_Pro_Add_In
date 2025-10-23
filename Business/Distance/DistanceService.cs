@@ -96,13 +96,11 @@ namespace HK_AREA_SEARCH.Distance
 
                 // 执行重分类
                 string reclassPath = await ReclassifyRaster(inputRasterPath, poiItem);
-                /*
+                
                 // 处理NoData值（根据距离的正负决定处理方式）
-                string finalPath = await ProcessNoDataValues(reclassPath, poiItem.Distance ?? 0);
+                string finalPath = await ProcessNoDataValues(reclassPath, poiItem.Distance ?? 0);   // distance不为null时使用其值，否则使用0
 
                 return finalPath;
-                */
-                return inputRasterPath;
             }
             catch (Exception ex)
             {

@@ -236,8 +236,9 @@ namespace HK_AREA_SEARCH.ViewModels
             }
         }
 
-
-
+        /// <summary>
+        /// 检查自定义间隔对话框输入的有效性
+        /// </summary>
         private bool ValidateClassItems()
         {
             // 首先重置所有错误标志

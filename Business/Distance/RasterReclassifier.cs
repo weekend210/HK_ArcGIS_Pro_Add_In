@@ -19,7 +19,7 @@ using System.Reflection;
 namespace HK_AREA_SEARCH.Distance
 {
     /// <summary>
-    /// /*栅格重分类器*/
+    /// 栅格重分类器
     /// </summary>
     public class RasterReclassifier
     {
@@ -82,7 +82,7 @@ namespace HK_AREA_SEARCH.Distance
         /// </summary>
         /// <param name="inputRasterPath">输入栅格路径</param>
         /// <param name="numClasses">分类数量</param>
-        /// <param name="invertValues">是否反转分类值</param>
+        /// <param name="poiItem">POI的所有输入内容</param>
         /// <returns>重分类后的栅格路径</returns>
         public async Task<string> CreateEqualIntervalClasses(string inputRasterPath, int numClasses, POIDataItem poiItem)
         {
@@ -116,12 +116,8 @@ namespace HK_AREA_SEARCH.Distance
                         workspace: null
                     );
 
-                    // 参数设置
-                    GPExecuteToolFlags executeFlags = GPExecuteToolFlags.AddToHistory | GPExecuteToolFlags.AddOutputsToMap;
-
-
                     // 执行重分类工具
-                    var result = await Geoprocessing.ExecuteToolAsync("sa.Reclassify", parameters, environments, null, null, executeFlags);
+                    var result = await Geoprocessing.ExecuteToolAsync("sa.Reclassify", parameters, environments, null, null, GPExecuteToolFlags.AddToHistory);
 
                     if (result.IsFailed)
                     {
@@ -140,7 +136,7 @@ namespace HK_AREA_SEARCH.Distance
         }
 
         /// <summary>
-        /// /*构建等间隔重分类表达式*/
+        /// 构建等间隔重分类表达式
         /// </summary>
         private async Task<string> BuildEqualIntervalExpression(string inputRasterPath, POIDataItem poiItem, int numClasses)
         {
@@ -200,7 +196,6 @@ namespace HK_AREA_SEARCH.Distance
         /// </summary>
         /// <param name="inputRasterPath">输入栅格路径</param>
         /// <param name="classItems">分类项列表</param>
-        /// <param name="invertValues">是否反转分类值</param>
         /// <returns>重分类后的栅格路径</returns>
         public async Task<string> CreateCustomClasses(string inputRasterPath, List<IntervalClassItem> classItems)
         {
@@ -234,7 +229,7 @@ namespace HK_AREA_SEARCH.Distance
                             outputCoordinateSystem: null,
                             scratchWorkspace: null,
                             workspace: null
-                        ));
+                        ), null, null, GPExecuteToolFlags.AddToHistory);
 
                     if (result.IsFailed)
                     {
