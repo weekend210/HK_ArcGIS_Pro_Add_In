@@ -57,7 +57,7 @@ namespace HK_AREA_SEARCH.Rating
                     }
 
                     // 可选：简化面要素
-                    outputVectorPath = await SimplifyPolygons(outputVectorPath);
+                    //outputVectorPath = await SimplifyPolygons(outputVectorPath);
 
                     return outputVectorPath;
                 }

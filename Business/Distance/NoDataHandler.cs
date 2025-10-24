@@ -7,7 +7,6 @@ using ArcGIS.Desktop.Core;
 using ArcGIS.Desktop.Editing;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.Core.Geoprocessing;
-using ArcGIS.Desktop.Framework.Dialogs;
 using ArcGIS.Desktop.Mapping;
 using HK_AREA_SEARCH.Infrastructure.Services;
 using HK_AREA_SEARCH.Infrastructure.Helpers;
@@ -54,8 +53,6 @@ namespace HK_AREA_SEARCH.Distance
                         outputRasterPath  // 输出栅格
                     );
 
-                    MessageBox.Show(Expression, "表达式");
-
                     // ***** 在控制台输出 Expression 用于调试 *****
                     //Debug.WriteLine($"[DEBUG-RasterCalculator] 输入路径: {inputRasterPath}");
                     //Debug.WriteLine($"[DEBUG-RasterCalculator] 表达式: {Expression}");
@@ -72,7 +69,7 @@ namespace HK_AREA_SEARCH.Distance
                     );
 
                     // 执行栅格计算器工具
-                    var result = await Geoprocessing.ExecuteToolAsync("RasterCalculator_sa", parameters, environments);
+                    var result = await Geoprocessing.ExecuteToolAsync("RasterCalculator_sa", parameters, environments, null, null, GPExecuteToolFlags.AddToHistory);
 
                     if (result.IsFailed)
                     {

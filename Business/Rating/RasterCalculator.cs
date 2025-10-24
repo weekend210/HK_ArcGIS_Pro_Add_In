@@ -11,6 +11,7 @@ using ArcGIS.Desktop.Core.Geoprocessing;
 using ArcGIS.Desktop.Mapping;
 using HK_AREA_SEARCH.Infrastructure.Services;
 using HK_AREA_SEARCH.Infrastructure.Helpers;
+//using System.Diagnostics; // 引入 Debug.WriteLine
 
 namespace HK_AREA_SEARCH.Rating
 {
@@ -42,7 +43,13 @@ namespace HK_AREA_SEARCH.Rating
                     _tempFileManager.RegisterTempFile(outputRasterPath);
 
                     // 构建加权求和表达式
+                    // 计算表达式伪代码：“（结果栅格1* 权重1）+（结果栅格2* 权重2）+（结果栅格3* 权重3）+…”
                     string expression = BuildWeightedSumExpression(rasterPaths, weights);
+
+                    // ***** 在控制台输出 Expression 用于调试 *****
+                    //Debug.WriteLine("-----[DEBUG-RasterCalculator]-----");
+                    //Debug.WriteLine($"[DEBUG-RasterCalculator] 表达式: {expression}");
+                    // **********************************************
 
                     var parameters = Geoprocessing.MakeValueArray(
                         expression,
@@ -76,50 +83,14 @@ namespace HK_AREA_SEARCH.Rating
 
             foreach (var kvp in rasterPaths)
             {
-                string rasterName = Path.GetFileNameWithoutExtension(kvp.Value);
                 if (weights.ContainsKey(kvp.Key))
                 {
                     double weight = weights[kvp.Key];
-                    expressionParts.Add($"({weight} * \"{rasterName}\")");
+                    expressionParts.Add($"({weight} * Raster(r\"{kvp.Value}\"))");
                 }
             }
 
             return string.Join(" + ", expressionParts);
-        }
-
-        /// <summary>
-        /// 执行计算
-        /// </summary>
-        /// <param name="expression">计算表达式</param>
-        /// <param name="outputPath">输出路径</param>
-        /// <returns>计算结果路径</returns>
-        public async Task<string> ExecuteCalculation(string expression, string outputPath)
-        {
-            return await QueuedTask.Run(async () =>
-            {
-                try
-                {
-                    var parameters = Geoprocessing.MakeValueArray(
-                        expression,
-                        outputPath
-                    );
-
-                    var result = await Geoprocessing.ExecuteToolAsync("sa.RasterCalculator", parameters);
-
-                    if (result.IsFailed)
-                    {
-                        // 将错误消息列表转换为字符串
-                        string errorMessages = string.Join("; ", result.ErrorMessages);
-                        throw new Exception($"栅格计算失败: {errorMessages}");
-                    }
-
-                    return outputPath;
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception($"执行栅格计算时发生错误: {ex.Message}", ex);
-                }
-            });
         }
     }
 }

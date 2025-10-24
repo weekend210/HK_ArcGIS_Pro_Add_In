@@ -409,7 +409,7 @@ namespace HK_AREA_SEARCH
                     POIItems.Where(p => !p.IsEmpty).ToList(),
                     AnalysisAreaPath
                 );
-/*
+
                 // 6. 执行模块3: 评分计算
                 var ratingService = new RatingService(tempFileManager);
                 var weights = POIItems.Where(p => !p.IsEmpty)
@@ -420,7 +420,7 @@ namespace HK_AREA_SEARCH
                     suitableAreaPath,
                     OutputPath
                 );
-
+/*
                 // 7. 清理临时文件
                 tempFileManager.CleanupAll();
 

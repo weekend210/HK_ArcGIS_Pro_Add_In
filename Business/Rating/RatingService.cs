@@ -40,11 +40,13 @@ namespace HK_AREA_SEARCH.Rating
 
                 // 2. 将评分栅格转换为矢量
                 string ratingVectorPath = await ConvertToVector(ratingRasterPath);
-
+                return ratingVectorPath;
+                /*
                 // 3. 与可建设土地进行相交分析
                 string resultPath = await IntersectWithSuitableArea(ratingVectorPath, suitableAreaPath, outputPath);
 
                 return resultPath;
+                */
             }
             catch (Exception ex)
             {
